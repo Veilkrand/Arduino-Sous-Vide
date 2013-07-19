@@ -16,6 +16,12 @@
 #include <UTouch.h>
 #include <UTFT_Buttons.h>
 
+//My classes
+#include "Settings.h"
+
+#include "MainPanel.h"
+#include "SettingsPanel.h"
+
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
 extern uint8_t BigFont[];
@@ -43,11 +49,11 @@ UTFT myGLCD(ITDB32S,38,39,40,41);
 // Standard chipKit Uno32/uC32                 : 20,21,22,23,24
 // Standard chipKit Max32                      : 62,63,64,65,66
 // AquaLEDSource All in One Super Screw Shield : 62,63,64,65,66
-UTouch        myTouch(6,5,4,3,2);
+UTouch myTouch(6,5,4,3,2);
 
 // Finally we set up UTFT_Buttons :)
 UTFT_Buttons  myButtons(&myGLCD, &myTouch);
-
+  
   //Panels
   #define mainPanel 0
   #define presetPanel 1
@@ -55,7 +61,7 @@ UTFT_Buttons  myButtons(&myGLCD, &myTouch);
   #define configPanel 3    
   int actualPanel=mainPanel;
   
-  boolean panelReady=false;
+  //boolean panelReady=false;
   
   //buttons
   int butPlusTemp,butMinusTemp;
@@ -75,7 +81,7 @@ UTFT_Buttons  myButtons(&myGLCD, &myTouch);
   int yButStart=70;
 
   //Preset string
-  String presetString="None";
+  String presetString="None ";
 
   //Control Variables
   float temperature=50.5;
@@ -84,7 +90,7 @@ UTFT_Buttons  myButtons(&myGLCD, &myTouch);
   //configuration options
   boolean fahrenheit=false;
   boolean preheating=true;
-
+/*
   //Settings type
   typedef struct
   {
@@ -93,12 +99,23 @@ UTFT_Buttons  myButtons(&myGLCD, &myTouch);
     boolean fahrenheit;
     boolean preheating;
   }  settingsType;
-  settingsType settings;
+  
+  */
+  
+  SettingsType settings;
 
+
+  
+  MainPanel panelMain("Cook Settings","Preset: "+presetString,&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback); 
+  SettingsPanel panelSettings("Configuration"," ",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback);
 
 void setup()
 {
+  
+  Serial.begin(9600);
+   
   myGLCD.InitLCD();
+  
   myGLCD.clrScr();
   myGLCD.setFont(SmallFont);
   //myGLCD.setFont(BigFont);
@@ -109,23 +126,53 @@ void setup()
   myButtons.setTextFont(BigFont);
   myButtons.setSymbolFont(Dingbats1_XL);
   
-  /*
+/*
   //Write factory settings. Only first time!!!
-  settingsType settings={temperature,time,fahrenheit,preheating};
-  eeprom_write_block((void*)&settings, (void*)0, sizeof(settingsType));
-  */
-  
+  SettingsType settings={temperature,time,fahrenheit,preheating};
+  eeprom_write_block((void*)&settings, (void*)0, sizeof(SettingsType));
+*/
+
   //Load Settings
-  eeprom_read_block((void*)&settings, (void*)0, sizeof(settingsType));
+  eeprom_read_block((void*)&settings, (void*)0, sizeof(SettingsType));
   
     temperature=settings.temperature;
     time=settings.time;
     fahrenheit=settings.fahrenheit;
     preheating=settings.preheating;
-    
+  
+  //drawMainPanel();
+  
+  //Using panel Class
+//  panelMain("Cook Settings","Preset: None ",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback);  
 
   
-  drawMainPanel();
+  //Serial.print(settings.temperature);
+  
+  panelMain.show();
+
+
+  
+}
+
+void switchPanelCallback(int toPanel){
+  
+  Serial.print(toPanel);
+  
+  switch(toPanel){
+   
+    case mainPanel:
+    saveSettings();
+    panelMain.show();
+    break;
+    case presetPanel:
+    break;
+    case cookingPanel:
+    break;
+    case configPanel:
+    panelSettings.show();
+    break;
+    
+  }
   
 }
 
@@ -178,7 +225,7 @@ void updateTimeLabel(){
 }
 
 void clearPanel(){
-           panelReady=false;
+
            myButtons.deleteAllButtons();
            myGLCD.clrScr();
            delay(500);
@@ -212,7 +259,7 @@ void drawGraphFrame(){
 
   myGLCD.setColor(VGA_WHITE);
   
-  panelReady=true;
+//  panelReady=true;
 }
 
 void drawCookingPanel(){
@@ -234,7 +281,7 @@ void drawCookingPanel(){
   
   drawGraphFrame();
   
-  panelReady=true;
+//  panelReady=true;
 }
 
 void drawConfigPanel(){
@@ -336,7 +383,7 @@ void drawMainPanel(){
   
   myButtons.drawButtons();
   
-    panelReady=true;
+//    panelReady=true;
 }
 
 void loop()
@@ -530,11 +577,14 @@ void loop()
 }
 
 void saveSettings(){
+
+  /*
     settings.temperature=temperature;
     settings.time=time;
     settings.fahrenheit=fahrenheit;
     settings.preheating=preheating;
-    eeprom_write_block((void*)&settings, (void*)0, sizeof(settingsType));
+*/
+    eeprom_write_block((void*)&settings, (void*)0, sizeof(SettingsType));
 }
 
 
