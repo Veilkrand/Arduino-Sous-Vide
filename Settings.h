@@ -10,6 +10,7 @@
     int time;
     boolean fahrenheit;
     boolean preheating;
+//    String presetText;
   }  SettingsType;
 
 

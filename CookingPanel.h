@@ -1,5 +1,5 @@
-#ifndef MainPanel_h
-#define MainPanel_h
+#ifndef CookingPanel_h
+#define CookingPanel_h
 
 #include "Arduino.h"
 
@@ -9,19 +9,21 @@
 
 
 
-class MainPanel: public PanelGUI
+class CookingPanel: public PanelGUI
 {
   
   public:
         
-        MainPanel(String headText,String subheadText,UTFT *myGLCD,UTouch *myTouch,UTFT_Buttons *myButtons,SettingsType *settings,CallbackFunction eventCallbackFunction);
+        CookingPanel(String headText,String subheadText,UTFT *myGLCD,UTouch *myTouch,UTFT_Buttons *myButtons,SettingsType *settings,CallbackFunction eventCallbackFunction);
         /*
         void setHeadText(String headText);
         void setSubheadText(String subheadText);	
 */        
         void show();
         
-        String presetString;
+        void drawGraphFrame();
+        
+//        String presetString;
         
 
 
@@ -35,13 +37,18 @@ class MainPanel: public PanelGUI
   String getFloatString(float value);
   String formatTemperature(float temperature);
   
+  /*
   void updateTemperatureLabel();
   void updateTimeLabel();
 
   void updatePresetLabel(String presetString);
   void updatePresetLabel();  
   void resetPreset();
+  */
   
+  int butTop;
+  
+  /*
   int butHourPlusTime;
   int butHourMinusTime;
   int butMinusTemp;
@@ -49,7 +56,7 @@ class MainPanel: public PanelGUI
   int butStart;
   int butTop0;
   int butTop1;
-  
+  */
   
   
   /*

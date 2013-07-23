@@ -7,6 +7,8 @@ MainPanel::MainPanel(String headText,String subheadText,UTFT *myGLCD,UTouch *myT
 
   _settings=settings;
   
+  presetString="None   ";
+  
   //float temperature=_settings->temperature;
   //Serial.print(temperature);
 
@@ -23,7 +25,9 @@ void MainPanel::show(){
    
   _sizeX=_myGLCD->getDisplayXSize();
   _sizeY=_myGLCD->getDisplayYSize();
- 
+   
+   _subheadText="Preset: "+presetString;
+   
    clearScreen();
    
    isActive=true;
@@ -66,33 +70,33 @@ void MainPanel::show(){
       
       
       if (pressed_button==butPlusTemp){
-        updatePresetLabel("None          ");  
+        resetPreset();
         _settings->temperature+=0.5;
         updateTemperatureLabel();
       }
       if (pressed_button==butMinusTemp){
-        updatePresetLabel("None          ");  
+        resetPreset();
         _settings->temperature-=0.5;
         updateTemperatureLabel();
       }
       
       if (pressed_button==butPlusTime){
-        updatePresetLabel("None          ");          
+        resetPreset();
         _settings->time+=1;
         updateTimeLabel();
       }
       if (pressed_button==butMinusTime){
-        updatePresetLabel("None          ");          
+        resetPreset();
         _settings->time-=1;
         updateTimeLabel();
       }
       if (pressed_button==butHourPlusTime){
-        updatePresetLabel("None          ");          
+        resetPreset();
         _settings->time+=60;
         updateTimeLabel();
       }
       if (pressed_button==butHourMinusTime){
-        updatePresetLabel("None          ");          
+        resetPreset();
         _settings->time-=60;
         updateTimeLabel();
       }
@@ -101,14 +105,14 @@ void MainPanel::show(){
       
            //drawCookingPanel();
            isActive=false;
-           _eventCallbackFunction(0);
+           _eventCallbackFunction(2);
            
       }
       
       if(pressed_button==butTop0){
   
-        //isActive=false;
-        //_eventCallbackFunction(3);
+        isActive=false;
+        _eventCallbackFunction(1);
       }
       
       if(pressed_button==butTop1){
@@ -163,6 +167,23 @@ void MainPanel::updatePresetLabel(String presetString){
   setSubheadText("Preset: "+ presetString);
 //  _myGLCD->setFont(SmallFont);
  // _myGLCD->print("Preset: "+ presetString, 10, 5+20);
+}
+
+void MainPanel::updatePresetLabel(){
+
+  //String preset="None";
+ // setSubheadText("Preset: "+ presetText);
+//  _myGLCD->setFont(SmallFont);
+ // _myGLCD->print("Preset: "+ presetString, 10, 5+20);
+}
+
+void MainPanel::resetPreset(){
+  
+  //_settings->presetText=String("None        ");
+//  strcpy(_settings->presetText,"None       ");
+  presetString="None   ";
+  updatePresetLabel(presetString);
+  
 }
 
 String MainPanel::getFloatString(float value){
