@@ -7,7 +7,14 @@
 
 #include "Settings.h"
 
+#include "TemperatureSensor.h"
 
+#include "GraphPanel.h"
+
+
+//pins
+#define PIN_TEMPPROBE A0 //Dallas DS18B20
+#define PIN_POWERTAIL A7 //PowerSwitch Tail II
 
 class CookingPanel: public PanelGUI
 {
@@ -21,21 +28,29 @@ class CookingPanel: public PanelGUI
 */        
         void show();
         
-        void drawGraphFrame();
         
 //        String presetString;
         
-
+          void updateTemperature();
 
   
   
   private:
   
   SettingsType *_settings;
-
   
   String getFloatString(float value);
   String formatTemperature(float temperature);
+
+
+
+  
+  TemperatureSensor mySensor;
+  GraphPanel myGraph;
+  
+  float tempC;
+  void drawGraphLine();
+  int _graphIndex;
   
   /*
   void updateTemperatureLabel();

@@ -2,6 +2,46 @@
 July 2013
 Alberto Naranjo Galet
 alberto[dot]galet[at]gmail[dot]com
+
+
+ARDUINO SOUS-VIDE SMART APPLIANCE
+=================================
+
+
+HARDWARE
+- Arduino Mega
+- Sainsmart TFT/Touch shield
+- Sainsmart TFT/Touch display
+
+- PIN:A0 -> Waterproof DS18B20 Digital temperature sensor http://www.adafruit.com/products/381
+- PIN:A7 -> TailGateII http://www.adafruit.com/products/268
+
+- Reference from: http://learn.adafruit.com/sous-vide-powered-by-arduino-the-sous-viduino/the-whole-enchilada
+
+
+EXTERNAL CLASSES
+- TFT/Touch/Buttons classes from http://www.henningkarlsen.com/electronics
+- DallasTemperature.h + OneWire.h for controlling the DS18B20 Digital temperature sensor
+- PID_v1.h PID Controller
+
+CLASS HIERARCHY
+- Main file
+  - PanelGUI
+    -- CookingPanel
+       - GraphPanel
+       - TemperatureSensor
+    -- MainPanel
+    -- PresetsPanel
+    -- SettingsPanel
+    -- Settings.h
+
+
+CLASS DOCS
+
+* Main file
+Initialize display, touch and button class. Initialize Panel classes and receive callback from them to switch panel. It loses the flow control to panels.
+
+
 */
 
 
@@ -14,11 +54,18 @@ alberto[dot]galet[at]gmail[dot]com
 //Settings struct
 #include "Settings.h"
 
+#include <Time.h>
+#include <TimeAlarms.h>
+
+
 //Implementation of Panel Classes
 #include "MainPanel.h"
 #include "SettingsPanel.h"
 #include "PresetsPanel.h"
 #include "CookingPanel.h"
+
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
 // Declare which fonts we will be using
 extern uint8_t SmallFont[];
@@ -66,7 +113,7 @@ UTFT_Buttons  myButtons(&myGLCD, &myTouch);
   MainPanel panelMain("Cook Settings","Preset: None ",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback);
   SettingsPanel panelSettings("Configuration"," ",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback);
   PresetsPanel panelPresets("Presets","Select a cooking preset",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback,&panelMain);
-  CookingPanel panelCooking("Cooking -1H:3m","",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback);
+  CookingPanel panelCooking("Cooking 0:0:0","",&myGLCD, &myTouch,&myButtons,&settings,switchPanelCallback);
   
 
 void setup()
@@ -118,7 +165,7 @@ void switchPanelCallback(int toPanel){
     panelPresets.show();
     break;
     case cookingPanel:
-    panelCooking.show();    
+    panelCooking.show();
     break;
     case configPanel:
     panelSettings.show();

@@ -29,6 +29,7 @@ PanelGUI::PanelGUI(String headText,String subheadText,UTFT *myGLCD,UTouch *myTou
 void PanelGUI::setHeadText(String headText){
   _myGLCD->setFont(BigFont);
   _myGLCD->print(headText, _headTextPosX, _headTextPosY);
+  _myGLCD->setFont(SmallFont);
 }
 void PanelGUI::setSubheadText(String subheadText){
   _myGLCD->setFont(SmallFont);
