@@ -10,7 +10,7 @@ class GraphPanel
   
   public:
         
-        GraphPanel(int height,UTFT *myGLCD,SettingsType *settings);
+        GraphPanel(UTFT *myGLCD,SettingsType *settings);
         /*
         void setHeadText(String headText);
         void setSubheadText(String subheadText);	
@@ -18,7 +18,7 @@ class GraphPanel
         void drawFrame(int minValue);
         
         void drawValue(float tempValue);
-          
+        void setHeight(int height);  
   
   private:
   

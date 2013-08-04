@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "CookingPanel.h"
 
-CookingPanel::CookingPanel(String headText,String subheadText,UTFT *myGLCD,UTouch *myTouch,UTFT_Buttons *myButtons,SettingsType *settings,CallbackFunction eventCallbackFunction):PanelGUI(headText,subheadText,myGLCD,myTouch,myButtons,eventCallbackFunction), mySensor(PIN_TEMPPROBE),myGraph(160,myGLCD,settings)
+CookingPanel::CookingPanel(String headText,String subheadText,UTFT *myGLCD,UTouch *myTouch,UTFT_Buttons *myButtons,SettingsType *settings,CallbackFunction eventCallbackFunction):PanelGUI(headText,subheadText,myGLCD,myTouch,myButtons,eventCallbackFunction), mySensor(PIN_TEMPPROBE),myGraph(myGLCD,settings)
 {
   
 
@@ -55,6 +55,7 @@ void CookingPanel::show(){
   
   //drawGraphFrame();
   
+  myGraph.setHeight(160);
   myGraph.drawFrame(tempC);
   
   while(isActive){
